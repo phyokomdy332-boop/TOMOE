@@ -1,0 +1,34 @@
+name: Build APK
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Unzip Project
+        run: unzip MiniBlock3D_TOMOE_PLAY.zip
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build APK
+        run: |
+          cd MiniBlock3D_Multiplayer
+          gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiniBlock3D-Game-APK
+          path: MiniBlock3D_Multiplayer/app/build/outputs/apk/debug/*.apk
+          
